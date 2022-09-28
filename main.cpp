@@ -157,7 +157,7 @@ int main(int argc, char* argv[]){
         c = multiplyCacheBlocking(matrix, vector, n, m, tile_size);
     else
         c = multiply(matrix, vector, n, m);
-    printElements(matrix, vector, c, n, m);
+    //printElements(matrix, vector, c, n, m);
     delete[] vector;
     delete[] c;
     for(long i = 0; i < n; i++){
