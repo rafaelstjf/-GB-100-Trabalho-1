@@ -39,7 +39,7 @@ long* multiply(long* matrix, long* vector, long n, long m){
     }
     for(long i  = 0; i < n; i++){
         for(long j = 0; j < m; j++){
-            c[i] += matrix[i*n + j]*vector[j];
+            c[i] += matrix[i*m + j]*vector[j];
             //cout << "c[" << i << "]: = " << "M[" << i << "][" << j << "]*b[" << j << "]" << endl;
             //cout << c[i] << " = " << matrix[i][j] << " * " << vector[j] << endl;
         }
@@ -65,9 +65,9 @@ long* multiplyCacheBlocking(long* matrix, long* vector, long n, long m, int tile
     for(long jj = 0; jj < m; jj+=(long)tile_size){
         for(long i  = 0; i < n; i++){
             for(long j = jj; j < jj + (long)tile_size; j++){
-                c[i] += matrix[i*n + j]*vector[j];
+                c[i] += matrix[i*m + j]*vector[j];
                 //cout << "c[" << i << "]: = " << "M[" << i << "][" << j << "]*b[" << j << "]" << endl;
-                //cout << c[i] << " = " << matrix[i][j] << " * " << vector[j] << endl;
+                //cout << c[i] << " = " << matrix[i*m + j] << " * " << vector[j] << endl;
             }
         }
     }
@@ -85,7 +85,7 @@ long* create_matrix(long n, long m){
     long* matrix  = new long[n*m];
     for(long i = 0; i < n; i++){
         for(long j = 0; j < m; j++){
-            matrix[i*n + j] = uniform(mt);
+            matrix[i*m + j] = uniform(mt);
         }
     }
     return matrix;
@@ -119,7 +119,7 @@ void printElements(long** matrix, long* vector, long *c, long n, long m){
     cout << "Matrix: " << endl;
     for(long i = 0; i < n; i++){
         for(long j = 0; j < m; j++){
-            cout << matrix[i*n + j] << "\t";
+            cout << matrix[i*m + j] << "\t";
         }
         cout << endl;
     }
