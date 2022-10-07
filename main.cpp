@@ -28,7 +28,7 @@ using namespace std;
  * @param m: Número de linhas do vetor
  * @return int*: Retorna o vetor resultante da multiplicação
  */
-long* multiply(long** matrix, long* vector, long n, long m){
+long* multiply(long* matrix, long* vector, long n, long m){
     long* c = new long[n];
     if(c){
         for(long i = 0; i < n; i++)
@@ -39,7 +39,7 @@ long* multiply(long** matrix, long* vector, long n, long m){
     }
     for(long i  = 0; i < n; i++){
         for(long j = 0; j < m; j++){
-            c[i] += matrix[i][j]*vector[j];
+            c[i] += matrix[i*n + j]*vector[j];
             //cout << "c[" << i << "]: = " << "M[" << i << "][" << j << "]*b[" << j << "]" << endl;
             //cout << c[i] << " = " << matrix[i][j] << " * " << vector[j] << endl;
         }
@@ -56,7 +56,7 @@ long* multiply(long** matrix, long* vector, long n, long m){
  * @param tile_size: Tamanho do tile
  * @return long*: Retorna o vetor resultante da multiplicação
  */
-long* multiplyCacheBlocking(long** matrix, long* vector, long n, long m, int tile_size){
+long* multiplyCacheBlocking(long* matrix, long* vector, long n, long m, int tile_size){
     assert(m % (long)tile_size == 0);
     long* c = new long[n];
     for(long i =0; i < n; i++){
@@ -65,7 +65,7 @@ long* multiplyCacheBlocking(long** matrix, long* vector, long n, long m, int til
     for(long jj = 0; jj < m; jj+=(long)tile_size){
         for(long i  = 0; i < n; i++){
             for(long j = jj; j < jj + (long)tile_size; j++){
-                c[i] += matrix[i][j]*vector[j];
+                c[i] += matrix[i*n + j]*vector[j];
                 //cout << "c[" << i << "]: = " << "M[" << i << "][" << j << "]*b[" << j << "]" << endl;
                 //cout << c[i] << " = " << matrix[i][j] << " * " << vector[j] << endl;
             }
@@ -80,13 +80,12 @@ long* multiplyCacheBlocking(long** matrix, long* vector, long n, long m, int til
  * @param m: Número de colunas
  * @return long**: Retorna a matriz criada
  */
-long** create_matrix(long n, long m){
+long* create_matrix(long n, long m){
     uniform_int_distribution<long> uniform{0L,MAX_VALUE};
-    long** matrix  = new long*[n];
+    long* matrix  = new long[n*m];
     for(long i = 0; i < n; i++){
-        matrix[i] = new long[m];
         for(long j = 0; j < m; j++){
-            matrix[i][j] = uniform(mt);
+            matrix[i*n + j] = uniform(mt);
         }
     }
     return matrix;
@@ -120,7 +119,7 @@ void printElements(long** matrix, long* vector, long *c, long n, long m){
     cout << "Matrix: " << endl;
     for(long i = 0; i < n; i++){
         for(long j = 0; j < m; j++){
-            cout << matrix[i][j] << "\t";
+            cout << matrix[i*n + j] << "\t";
         }
         cout << endl;
     }
@@ -151,7 +150,7 @@ int main(int argc, char* argv[]){
         exit(-1);
     }
     long* vector  = create_vector(m);
-    long** matrix = create_matrix(n, m);
+    long* matrix = create_matrix(n, m);
     long* c = nullptr;
     if (use_cache)
         c = multiplyCacheBlocking(matrix, vector, n, m, tile_size);
@@ -160,9 +159,6 @@ int main(int argc, char* argv[]){
     //printElements(matrix, vector, c, n, m);
     delete[] vector;
     delete[] c;
-    for(long i = 0; i < n; i++){
-        delete[] matrix[i];
-    }
     delete[] matrix;
     return 0;
 }
